@@ -1,29 +1,51 @@
+# Name of the workflow that will appear in GitHub Actions UI
 name: Node CI
 
+# Trigger conditions - this workflow will run on:
+# - Any push to any branch
+# - Any pull request (opened, synchronized, or reopened)
 on:
   - push
   - pull_request
 
+# Environment variables available to all jobs in this workflow
 env:
-  CI: true
+  CI: true  # This tells Node.js tools we're in a CI environment
 
+# Jobs represent a sequence of tasks that execute on the same runner
 jobs:
+  # Job named "build"
   build:
+    # Specifies the operating system for the runner
+    runs-on: ubuntu-latest  # Uses the latest Ubuntu runner
 
-    runs-on: ubuntu-latest
-
+    # Strategy creates a build matrix for different configurations
     strategy:
       matrix:
-        node-version: [18.x]
+        # Test against this Node.js version
+        node-version: [18.x]  # Uses Node.js 18 LTS version
 
+    # Steps represent a sequence of tasks that will be executed
     steps:
-      - uses: actions/checkout@v4
+      # Checks out your repository code so workflow can access it
+      - uses: actions/checkout@v4  # Official GitHub action for checking out code
+
+      # Sets up the specified Node.js version
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v4  # Official GitHub action for Node.js
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'npm'
-      - run: make install
-      - run: make lint
-      - run: make test
+          node-version: ${{ matrix.node-version }}  # Uses version from matrix
+          cache: 'npm'  # Caches npm dependencies to speed up future runs
+
+      # Runs the install command (assuming Makefile has an 'install' target)
+      - run: make install  # Typically installs project dependencies
+
+      # Runs the linting command (assuming Makefile has a 'lint' target)
+      - run: make lint  # Typically runs code linter (ESLint, etc.)
+
+      # Runs the test command (assuming Makefile has a 'test' target)
+      - run: make test  # Typically runs the test suite
+
+      # Uses a custom action from Hexlet (an educational platform)
       - uses: hexlet-components/hello-from-hexlet-action@release
+        # This appears to be a demonstration/training action
